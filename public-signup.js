@@ -13,6 +13,22 @@
     function formatDate(rawDate) { const date = new Date(`${rawDate}T00:00:00`); return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }); }
     function uid() { return Math.random().toString(36).slice(2, 10); }
     function publicName(firstName, lastName) { const firstInitial = String(firstName || "").trim().charAt(0).toUpperCase(); const safeLastName = String(lastName || "").trim(); return `${firstInitial}. ${safeLastName}`.trim(); }
+    function normalizeEmail(value) { return String(value || "").trim().toLowerCase(); }
+    function normalizePhone(value) { return String(value || "").replace(/\D/g, "").replace(/^1(?=\d{10}$)/, ""); }
+    function findDuplicate(events, email, phone) {
+        const targetEmail = normalizeEmail(email);
+        const targetPhone = normalizePhone(phone);
+        for (const event of events) {
+            for (const slot of (event.slots || [])) {
+                for (const person of (slot.claimedBy || [])) {
+                    const emailMatch = targetEmail && normalizeEmail(person.email) === targetEmail;
+                    const phoneMatch = targetPhone && normalizePhone(person.phone) === targetPhone;
+                    if (emailMatch || phoneMatch) return { person, event, slot, emailMatch, phoneMatch };
+                }
+            }
+        }
+        return null;
+    }
     function render(events) {
         container.replaceChildren();
         const sorted = [...events].sort((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0));
@@ -37,7 +53,17 @@
                         if (!latestEvent || !latestSlot) throw new Error("Position no longer exists"); latestSlot.claimedBy = Array.isArray(latestSlot.claimedBy) ? latestSlot.claimedBy : [];
                         if (latestSlot.claimedBy.length >= Number(latestSlot.count || 0)) throw new Error("This position has just been filled");
                         const firstName = String(formData.get("firstName") || "").trim(); const lastName = String(formData.get("lastName") || "").trim();
-                        latestSlot.claimedBy.push({ id: uid(), firstName, lastName, email: String(formData.get("email") || "").trim(), phone: String(formData.get("phone") || "").trim(), notes: String(formData.get("notes") || "").trim(), publicName: publicName(firstName, lastName) });
+                        const email = String(formData.get("email") || "").trim(); const phone = String(formData.get("phone") || "").trim();
+                        const duplicate = findDuplicate(latestEvents, email, phone);
+                        if (duplicate) {
+                            hideLoading();
+                            const matchType = duplicate.emailMatch && duplicate.phoneMatch ? "email address and phone number" : duplicate.emailMatch ? "email address" : "phone number";
+                            const existingName = duplicate.person.publicName || publicName(duplicate.person.firstName, duplicate.person.lastName) || "another volunteer";
+                            const proceed = window.confirm(`Duplicate warning: This ${matchType} is already used by ${existingName} for ${duplicate.event.title} – ${duplicate.slot.name}.\n\nDo you still want to add this signup?`);
+                            if (!proceed) { setStatus("Signup not added. The email or phone number is already in use.", "info"); return; }
+                            showLoading("Saving signup...");
+                        }
+                        latestSlot.claimedBy.push({ id: uid(), firstName, lastName, email, phone, notes: String(formData.get("notes") || "").trim(), publicName: publicName(firstName, lastName) });
                         await saveEvents(latestEvents); setStatus("Thanks for volunteering! Your signup was saved.", "ok"); render(await loadEvents());
                     } catch (error) { setStatus(error instanceof Error ? error.message : "Unable to save signup.", "error"); } finally { hideLoading(); }
                 });
