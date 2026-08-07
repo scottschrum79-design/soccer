@@ -1,0 +1,9 @@
+.position-full {
+    background: #fff4f4;
+    border-color: #efb0b0;
+    box-shadow: inset 4px 0 0 #d9534f;
+    padding: 0.8rem;
+}
+.position-full > div:first-child { display: grid; gap: 0.3rem; }
+.position-full strong { color: #8e2e2e; }
+.position-full small { color: #a14b4b; font-weight: 700; }
