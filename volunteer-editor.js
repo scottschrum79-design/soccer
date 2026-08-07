@@ -2,6 +2,29 @@
     const adminContainer = document.getElementById("admin-event-list");
     if (!adminContainer) return;
 
+    function phoneDigits(value) {
+        let digits = String(value || "").replace(/\D/g, "");
+        if (digits.length === 11 && digits.startsWith("1")) digits = digits.slice(1);
+        return digits;
+    }
+
+    function formatPhone(value) {
+        const digits = phoneDigits(value);
+        if (digits.length !== 10) return null;
+        return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+
+    function setupPhoneInput(input) {
+        if (!input) return;
+        input.setAttribute("inputmode", "tel");
+        input.setAttribute("maxlength", "16");
+        input.placeholder = "(717) 555-1234";
+        input.addEventListener("blur", () => {
+            const formatted = formatPhone(input.value);
+            if (formatted) input.value = formatted;
+        });
+    }
+
     function ensureDialog() {
         let dialog = document.getElementById("editVolunteerDialog");
         if (dialog) return dialog;
@@ -32,6 +55,7 @@
 
         dialog.querySelector("#editVolunteerCancel").addEventListener("click", () => dialog.close());
         dialog.querySelector("#editVolunteerForm").addEventListener("submit", saveVolunteer);
+        setupPhoneInput(dialog.querySelector('input[name="phone"]'));
         return dialog;
     }
 
@@ -54,7 +78,7 @@
             form.firstName.value = person.firstName || "";
             form.lastName.value = person.lastName || "";
             form.email.value = person.email || "";
-            form.phone.value = person.phone || "";
+            form.phone.value = formatPhone(person.phone) || person.phone || "";
             form.notes.value = person.notes || "";
             dialog.showModal();
         } catch (error) {
@@ -66,6 +90,13 @@
         event.preventDefault();
         const form = event.currentTarget;
         const dialog = form.closest("dialog");
+        const formattedPhone = formatPhone(form.phone.value);
+
+        if (!formattedPhone) {
+            window.alert("Please enter a valid 10-digit U.S. phone number.");
+            form.phone.focus();
+            return;
+        }
 
         try {
             showLoading("Updating volunteer...");
@@ -80,7 +111,7 @@
             person.firstName = firstName;
             person.lastName = lastName;
             person.email = String(form.email.value || "").trim();
-            person.phone = String(form.phone.value || "").trim();
+            person.phone = formattedPhone;
             person.notes = String(form.notes.value || "").trim();
             person.publicName = publicDisplayName(firstName, lastName);
 
