@@ -126,7 +126,9 @@ set search_path = public
 as $$
   select jsonb_build_object('events', events)
   from public.app_state
-  where id = 1 and auth.role() = 'authenticated';
+  where id = 1
+    and auth.role() = 'authenticated'
+    and lower(auth.jwt()->>'email') = 'scott@cvsoccer.club';
 $$;
 
 create or replace function public.save_admin_events(p_events jsonb)
@@ -136,7 +138,8 @@ security definer
 set search_path = public
 as $$
 begin
-  if auth.role() <> 'authenticated' then
+  if auth.role() <> 'authenticated'
+     or lower(auth.jwt()->>'email') <> 'scott@cvsoccer.club' then
     raise exception 'Administrator sign-in required';
   end if;
 
