@@ -21,6 +21,8 @@ function getReportRows(events) {
                     lastName: person.lastName || "",
                     email: person.email || "",
                     phone: person.phone || "",
+                    shirtSize: person.shirtSize || "",
+                    handbookAccess: person.handbookAccess || "N",
                     notes: person.notes || ""
                 });
             });
@@ -40,6 +42,8 @@ function buildExcelReport(rows) {
         "Last Name",
         "Email",
         "Phone",
+        "Shirt Size",
+        "Soccer Handbook Access",
         "Notes"
     ];
 
@@ -55,6 +59,8 @@ function buildExcelReport(rows) {
                 <td>${escapeReportCell(row.lastName)}</td>
                 <td>${escapeReportCell(row.email)}</td>
                 <td>${escapeReportCell(row.phone)}</td>
+                <td>${escapeReportCell(row.shirtSize)}</td>
+                <td>${escapeReportCell(row.handbookAccess)}</td>
                 <td>${escapeReportCell(row.notes)}</td>
             </tr>
         `)
