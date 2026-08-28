@@ -20,6 +20,7 @@ function loadCreatorApp() {
 function showCreatorContent() {
     document.getElementById("creator-login").hidden = true;
     document.getElementById("creator-content").hidden = false;
+    document.getElementById("creator-signout").hidden = false;
     loadCreatorApp();
 }
 
@@ -57,7 +58,13 @@ async function signIn(email, password) {
 const form = document.getElementById("creator-auth-form");
 const emailInput = document.getElementById("creator-email");
 const passwordInput = document.getElementById("creator-password");
+const signoutButton = document.getElementById("creator-signout");
 emailInput.value = creatorConfig.creatorEmail || "";
+
+signoutButton.addEventListener("click", () => {
+    sessionStorage.removeItem(sessionKey);
+    window.location.reload();
+});
 
 if (storedSession()) {
     showCreatorContent();

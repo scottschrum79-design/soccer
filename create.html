@@ -10,7 +10,7 @@
     <script>window.TEAMSIGNUPS_ASSET_VERSION=Date.now().toString();document.write('<link rel="stylesheet" href="styles.css?v='+window.TEAMSIGNUPS_ASSET_VERSION+'" />');</script>
 </head>
 <body data-page="create">
-    <header class="topbar"><h1>TeamSignups</h1><p>Organizer / creator page</p><nav class="topnav"><a href="index.html">Signup Page</a><a href="create.html" class="active">Creator Page</a></nav></header>
+    <header class="topbar"><h1>TeamSignups</h1><p>Organizer / creator page</p><nav class="topnav"><a href="index.html">Signup Page</a><a href="create.html" class="active">Creator Page</a><button id="creator-signout" type="button" hidden>Sign out</button></nav></header>
     <main id="creator-login" class="layout creator-login">
         <section class="card"><h2>Creator access</h2><form id="creator-auth-form" class="stack"><label>Email<input id="creator-email" type="email" autocomplete="username" required /></label><label>Password<input id="creator-password" type="password" autocomplete="current-password" required /></label><button type="submit">Sign in</button><p id="creator-auth-status" class="creator-auth-status" data-type="error" hidden></p></form></section>
     </main>
