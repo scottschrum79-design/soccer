@@ -11,6 +11,7 @@ window.TEAMSIGNUPS_CONFIG = {
   supabaseUrl: "https://haxhggcummwstuhxqyvt.supabase.co",
   supabaseAnonKey: "sb_publishable_gYNV0rQrB35dbILQwRC9vQ_bIge3iYr",
   creatorEmail: "scott@cvsoccer.club",
+  emailNotificationUrl: "https://script.google.com/macros/s/AKfycbygmideQBwS8RHGDFp8uk2MYsEVLUauYzc-YZ4TUL7KIdnwuL5oZK7bRcxCVTKBZzfMbQ/exec",
 
   // The copied browser-visible password is intentionally disabled. The creator
   // page will use Supabase Authentication before this test becomes production.
