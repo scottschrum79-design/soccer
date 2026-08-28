@@ -1,6 +1,7 @@
 window.TEAMSIGNUPS_CONFIG = {
   // Keep Google active until the Supabase test has passed.
   storageProvider: "supabase",
+  previewMode: false,
 
   // Paste your deployed Google Apps Script Web App URL here.
   // This remains available as a fallback during the migration.

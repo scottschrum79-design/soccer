@@ -607,6 +607,8 @@ async function renderAdminPage() {
                 <td>${person.firstName} ${person.lastName}</td>
                 <td>${person.email}</td>
                 <td>${person.phone}</td>
+                <td>${person.shirtSize || "-"}</td>
+                <td>${person.handbookAccess || "N"}</td>
                 <td>${person.notes || "-"}</td>
                 <td>
                   <button type="button"
@@ -633,6 +635,8 @@ async function renderAdminPage() {
                         <th>Full name</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Shirt size</th>
+                        <th>Soccer Handbook</th>
                         <th>Notes</th>
                         <th>Action</th>
                       </tr>
